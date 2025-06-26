@@ -28,6 +28,8 @@ spec:
         env:
         - name: NPM_CONFIG_CACHE
           value: /tmp/.npm
+        - name: REPORT_REPO_URL
+          value: "http://reports-repo-llama-serve.apps.cloud.xtoph152.dfw.ocp.run"
         resources:
           limits:
             cpu: "500m"

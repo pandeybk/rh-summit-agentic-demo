@@ -49,6 +49,23 @@ spec:
               mountPath: /tmp/.chromium
             - name: mcp-output
               mountPath: /mcp_output
+        - name: uploader
+          image: registry.access.redhat.com/ubi9/ubi-minimal
+          command: ["/bin/sh", "-c"]
+          args:
+            - |
+              while true; do
+                for file in /mcp_output/*.pdf; do
+                  [ -e "$file" ] || continue
+                  filename=$(basename "$file")
+                  echo "Uploading $filename..."
+                  curl -X POST -F path=$filename -F file=@$file http://reports-repo:9000/upload && rm -f "$file"
+                done
+                sleep 1
+              done
+          volumeMounts:
+            - name: mcp-output
+              mountPath: /mcp_output
       volumes:
         - name: tmp-chrome-data
           emptyDir: {}
